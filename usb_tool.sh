@@ -6,12 +6,12 @@
 
 # Directory to mount the USB drive to
 MOUNT_POINT="/media/usb"
-# Directories from the vote signing tool (relative path)
+# Directories from the main vote signing tool (relative path)
 INPUT_DIR="./input"
 OUTPUT_DIR="./output"
+KEY_DIR="./keys"
 
 # NOTE: The user must CONFIRM the correct device path for their USB drive.
-# Common paths are /dev/sdb1, /dev/sdc1, etc.
 USB_DEVICE_PATH="/dev/sdb1"
 # ---------------------------------------------------------
 
@@ -20,7 +20,7 @@ USB_DEVICE_PATH="/dev/sdb1"
 # ==========================================================
 
 echo "⚙️ Setting up USB mount directory: $MOUNT_POINT"
-# The -p flag creates the directory only if it doesn't exist, and is silent if it does.
+# Create the mount point directory
 mkdir -p "$MOUNT_POINT"
 
 # --- Function Definitions ---
@@ -29,14 +29,12 @@ mkdir -p "$MOUNT_POINT"
 mount_usb_drive() {
     echo "--- 🔄 Attempting to Mount USB Drive ---"
 
-    # Check if the drive is already mounted
     if mountpoint -q "$MOUNT_POINT"; then
         echo "⚠️ Drive is already mounted at $MOUNT_POINT."
         return 0
     fi
 
     echo "Mounting device $USB_DEVICE_PATH..."
-    # Prompts for sudo password if necessary
     sudo mount "$USB_DEVICE_PATH" "$MOUNT_POINT" -o uid=$(id -u),gid=$(id -g)
 
     if [ $? -eq 0 ]; then
@@ -47,7 +45,7 @@ mount_usb_drive() {
     fi
 }
 
-# 2. Copy RAW Transaction File TO Signing Tool Input
+# 2. Copy RAW Transaction File TO Signing Tool Input Folder
 copy_raw_to_input() {
     echo "--- ⬇️ Copying *.raw file from USB to $INPUT_DIR ---"
 
@@ -56,13 +54,11 @@ copy_raw_to_input() {
         return 1
     fi
 
-    # Find the *.raw file on the mounted USB drive
     RAW_FILE=$(find "$MOUNT_POINT" -maxdepth 1 -type f -name "*.raw" -print -quit)
 
     if [ -z "$RAW_FILE" ]; then
         echo "❌ No single *.raw file found on the USB drive."
     else
-        # Copy the file
         cp "$RAW_FILE" "$INPUT_DIR/"
         if [ $? -eq 0 ]; then
             echo "✅ Successfully copied **$(basename "$RAW_FILE")** to $INPUT_DIR."
@@ -82,13 +78,11 @@ copy_witness_from_output() {
         return 1
     fi
 
-    # Find the *.signed file
-    SIGNED_FILE=$(find "$OUTPUT_DIR" -maxdepth 1 -type f -name "*.signed" -print -quit)
+    SIGNED_FILE=$(find "$OUTPUT_DIR" -maxdepth 1 -type f -name "*.witness" -print -quit)
 
     if [ -z "$SIGNED_FILE" ]; then
         echo "❌ No single **.signed** file found in the $OUTPUT_DIR directory."
     else
-        # Copy the file
         cp "$SIGNED_FILE" "$MOUNT_POINT/"
         if [ $? -eq 0 ]; then
             echo "✅ Successfully copied **$(basename "$SIGNED_FILE")** to USB drive."
@@ -99,7 +93,50 @@ copy_witness_from_output() {
     fi
 }
 
-# 4. Unmount USB Drive
+# 4. Backup Keys to USB (with Y/N verification)
+backup_keys_to_usb() {
+    echo "--- 🚨 KEY SECURITY WARNING 🚨 ---"
+    echo "You are copying UNENCRYPTED private and public keys."
+    echo "This USB drive **MUST** be treated as a **COLD BACKUP** - store it securely OFFLINE."
+    echo "----------------------------------------------------"
+
+    # Verification Prompt
+    echo -n "Do you wish to proceed? (Y/N): "
+    # The 'read -n 1' reads exactly one character, and the '|| read' allows input from non-interactive shell
+    read -r -n 1 CONFIRMATION
+    echo "" # Add a newline after the input
+
+    # Check the user's input
+    if [[ "$CONFIRMATION" != "Y" && "$CONFIRMATION" != "y" ]]; then
+        echo "❌ Backup aborted. Returning to menu."
+        return 0
+    fi
+
+    # --- Proceeding with Backup ---
+    if ! mountpoint -q "$MOUNT_POINT"; then
+        echo "❌ Drive is not mounted. Please run Menu 1 first."
+        return 1
+    fi
+
+    # Create a backup folder on the USB drive named after the KEY_DIR
+    USB_BACKUP_DIR="$MOUNT_POINT/cc_key_backup"
+    mkdir -p "$USB_BACKUP_DIR"
+
+    # Copy all keys from the KEY_DIR to the USB backup folder
+    cp "$KEY_DIR"/*.skey "$USB_BACKUP_DIR/" 2>/dev/null
+    cp "$KEY_DIR"/*.vkey "$USB_BACKUP_DIR/" 2>/dev/null
+
+    if [ $? -eq 0 ]; then
+        echo "✅ Key files copied successfully to $USB_BACKUP_DIR."
+        ls -lh "$USB_BACKUP_DIR"
+        echo "Please verify the files and store this USB securely OFFLINE."
+    else
+        echo "❌ Key Backup FAILED. Check if key files exist in $KEY_DIR."
+    fi
+}
+
+
+# 5. Unmount USB Drive
 unmount_usb_drive() {
     echo "--- ⏏️ Attempting to Unmount USB Drive ---"
 
@@ -108,7 +145,6 @@ unmount_usb_drive() {
         return 0
     fi
 
-    # Unmount the drive. Using 'sudo' is often necessary.
     sudo umount "$MOUNT_POINT"
 
     if [ $? -eq 0 ]; then
@@ -125,8 +161,9 @@ unmount_usb_drive() {
 # 3. MAIN MENU LOGIC
 # ==========================================================
 
-PS3='Enter your choice (1-4): '
-options=("Mount USB Drive" "Copy *.raw TO Input Folder" "Copy *.signed FROM Output Folder" "Unmount USB Drive" "Exit")
+PS3='Enter your choice (1-6): '
+# Note: Renumbering and reordering the options for logical flow
+options=("Mount USB Drive" "Copy *.raw TO Input Folder" "Backup Keys to USB" "Copy *.signed FROM Output Folder" "Unmount USB Drive" "Exit")
 
 echo "========================================================"
 echo "--- 💻 Cold Machine USB Transfer Tool ---"
@@ -144,6 +181,11 @@ do
         "Copy *.raw TO Input Folder")
             echo ""
             copy_raw_to_input
+            echo ""
+            ;;
+        "Backup Keys to USB")
+            echo ""
+            backup_keys_to_usb
             echo ""
             ;;
         "Copy *.signed FROM Output Folder")
