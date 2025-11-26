@@ -6,7 +6,7 @@
 
 # Directory to mount the USB drive to
 MOUNT_POINT="/media/usb"
-# Directories from the main vote signing tool (relative path)
+# Directories from the main signing tool (relative path)
 INPUT_DIR="./input"
 OUTPUT_DIR="./output"
 KEY_DIR="./keys"
@@ -45,7 +45,7 @@ mount_usb_drive() {
     fi
 }
 
-# 2. Copy RAW Transaction File TO Signing Tool Input Folder
+# 2. Copy RAW Transaction File TO Signing Tool Input
 copy_raw_to_input() {
     echo "--- ⬇️ Copying *.raw file from USB to $INPUT_DIR ---"
 
@@ -93,7 +93,7 @@ copy_witness_from_output() {
     fi
 }
 
-# 4. Backup Keys to USB (with Y/N verification)
+# NEW FUNCTION: 4. Backup Keys to USB (with Y/N verification)
 backup_keys_to_usb() {
     echo "--- 🚨 KEY SECURITY WARNING 🚨 ---"
     echo "You are copying UNENCRYPTED private and public keys."
