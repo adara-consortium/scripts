@@ -163,7 +163,7 @@ unmount_usb_drive() {
 
 PS3='Enter your choice (1-6): '
 # Note: Renumbering and reordering the options for logical flow
-options=("Mount USB Drive" "Copy *.raw TO Input Folder" "Backup Keys to USB" "Copy *.signed FROM Output Folder" "Unmount USB Drive" "Exit")
+options=("Mount USB Drive" "Copy *.raw TO Input Folder" "Backup Keys to COLD USB" "Copy *.signed FROM Output Folder" "Unmount USB Drive" "Exit")
 
 echo "========================================================"
 echo "--- 💻 Cold Machine USB Transfer Tool ---"
@@ -183,7 +183,7 @@ do
             copy_raw_to_input
             echo ""
             ;;
-        "Backup Keys to USB")
+        "Backup Keys to COLD USB")
             echo ""
             backup_keys_to_usb
             echo ""
