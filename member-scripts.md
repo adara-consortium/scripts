@@ -2,7 +2,7 @@
 Scripts and their contents to help make operations more understandable to less-technical users
 
 ### create-member-keys.sh
-This script will generate an individual members hot key pair for use in the consortium multi-sig script later. Run using `./member-key-gen.sh`
+This script will generate an individual members hot key pair for use in the consortium multi-sig script later. Run using `./create-member-keys.sh`
 ```
 MEMBER="name"
 
@@ -12,7 +12,7 @@ cardano-cli conway governance committee key-gen-hot \
 ```
 
 ### get-member-hash.sh
-This script will generate and display the key hash for an individual. This must be passed on to whoever is constructing the consortium multi-sig script. Run using `./member-key-hash.sh`
+This script will generate and display the key hash for an individual. This must be passed on to whoever is constructing the consortium multi-sig script. Run using `./get-member-hash.sh`
 ```
 MEMBER="name"
 
