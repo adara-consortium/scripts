@@ -12,8 +12,8 @@ OUTPUT_DIR="./output"
 KEY_DIR="./keys"
 
 # Key files are tagged with the MEMBER variable
-COLD_KEY="$KEY_DIR/${MEMBER}_hot.skey"
-VKEY="$KEY_DIR/${MEMBER}_hot.vkey"
+COLD_KEY="$KEY_DIR/${MEMBER}_cold.skey"
+VKEY="$KEY_DIR/${MEMBER}_cold.vkey"
 KEY_HASH="$KEY_DIR/${MEMBER}_hot_key.hash"
 CARDANO_CLI="/usr/local/bin/cardano-cli"
 
