@@ -4,7 +4,7 @@
 # 1. CONFIGURATION
 # ==========================================================
 # >>> UPDATE THIS VARIABLE FOR EACH COMMITTEE MEMBER <<<
-MEMBER="Member1"
+MEMBER="member1"
 # -----------------------------------------------------
 
 INPUT_DIR="./input"
@@ -32,10 +32,10 @@ echo "Setup complete. Welcome, $MEMBER."
 
 # 1. Generate Key Pair
 generate_keys() {
-    echo "--- 🔑 Generating Cold Key Pair for $MEMBER ---"
+    echo "--- 🔑 Generating cc_hot Key Pair for $MEMBER ---"
 
     if [ -f "$COLD_KEY" ]; then
-        echo "⚠️ WARNING: Cold key already exists for $MEMBER at $COLD_KEY."
+        echo "⚠️ WARNING: cc_hot key already exists for $MEMBER at $COLD_KEY."
         echo "To regenerate, you must manually delete the existing key files first!"
         return 1
     fi
@@ -59,7 +59,7 @@ generate_keys() {
 
 # 2. Get Key Hash
 get_key_hash() {
-    echo "--- 📋 Retrieving Key Hash for $MEMBER ---"
+    echo "--- 📋 Retrieving cc_hot Key Hash for $MEMBER ---"
 
     if [ ! -f "$VKEY" ]; then
         echo "❌ Verification Key ($VKEY) not found. Please run Key Generation (Menu 1) first."
@@ -75,7 +75,7 @@ get_key_hash() {
     if [ $? -eq 0 ]; then
         echo "✅ Key Hash Retrieved Successfully!"
         echo "--------------------------------------------------------"
-        echo "Key Hash (for on-chain registration for $MEMBER):"
+        echo "Key Hash (for cc_hot_script auth cert for $MEMBER):"
         echo $(cat "$KEY_HASH")
         echo "--------------------------------------------------------"
     else
@@ -155,23 +155,24 @@ sign_vote_file() {
 # 3. MAIN MENU LOGIC
 # ==========================================================
 PS3='Enter your choice (1-6): '
-options=("Generate Cold Keys" "Get Cold Key Hash" "Check for Unsigned File (*.raw)" "Sign the Vote File" "Shutdown Cold Machine" "Exit Menu")
+options=("Generate cc_hot Keys" "Get cc_hot Key Hash" "Check for Unsigned File (*.raw)" "Sign the Vote File" "Shutdown Cold Machine" "Exit Menu")
 
 echo "========================================================"
-echo "--- 🗳️ Cardano CC Key & Signing Tool (Bash) ---"
+echo "--- 🗳️  Cardano CC Key & Signing Tool ---"
 echo "Active User: **$MEMBER**"
 echo "========================================================"
-echo "NOTE: Ensure physical security; keys are stored unencrypted."
+echo "NOTE: Ensure physical security;"
+echo "Tool intended for use on a COLD machine!"
 
 select opt in "${options[@]}"
 do
     case $opt in
-        "Generate Cold Keys")
+        "Generate cc_hot Keys")
             echo ""
             generate_keys
             echo ""
             ;;
-        "Get Cold Key Hash")
+        "Get cc_hot Key Hash")
             echo ""
             get_key_hash
             echo ""
