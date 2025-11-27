@@ -24,6 +24,7 @@ cardano-cli conway governance committee key-gen-cold \
 ```
 
 b) Get hashes to be used for cc_cold_script
+
 Alice
 ```
 cardano-cli conway governance committee key-hash \
