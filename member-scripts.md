@@ -59,9 +59,5 @@ cardano-cli conway transaction witness \
   --testnet-magic 4 \
   --tx-body-file vote.raw \
   --signing-key-file ${MEMBER}_hot.skey \
-
-
-
-
   --out-file ${MEMBER}.witness
 ```
