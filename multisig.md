@@ -181,7 +181,7 @@ cardano-cli conway transaction build \
   --tx-in "$(cardano-cli query utxo --address "$(cat payment.addr)" --testnet-magic 4 --out-file /dev/stdout | jq -r 'keys[0]')" \
   --change-address $(cat payment.addr) \
   --certificate-file committee-hot-script-authorization.cert \
-  --witness-override 9 \
+  --witness-override 4 \
   --out-file tx.raw
 ```
 
@@ -210,36 +210,6 @@ cardano-cli conway transaction witness \
   --tx-body-file tx.raw \
   --signing-key-file committee3_cold.skey \
   --out-file committee3_cold.witness
-
-cardano-cli conway transaction witness \
-  --testnet-magic 4 \
-  --tx-body-file tx.raw \
-  --signing-key-file member1_hot.skey \
-  --out-file member1_hot.witness
-
-cardano-cli conway transaction witness \
-  --testnet-magic 4 \
-  --tx-body-file tx.raw \
-  --signing-key-file member2_hot.skey \
-  --out-file member2_hot.witness
-
-cardano-cli conway transaction witness \
-  --testnet-magic 4 \
-  --tx-body-file tx.raw \
-  --signing-key-file member3_hot.skey \
-  --out-file member3_hot.witness
-
-cardano-cli conway transaction witness \
-  --testnet-magic 4 \
-  --tx-body-file tx.raw \
-  --signing-key-file member4_hot.skey \
-  --out-file member4_hot.witness
-
-cardano-cli conway transaction witness \
-  --testnet-magic 4 \
-  --tx-body-file tx.raw \
-  --signing-key-file member5_hot.skey \
-  --out-file member5_hot.witness
 ```
 
 d) Assemble the transaction witnesses
@@ -250,11 +220,6 @@ cardano-cli conway transaction assemble \
   --witness-file  committee1_cold.witness \
   --witness-file  committee2_cold.witness \
   --witness-file  committee3_cold.witness \
-  --witness-file  member1_hot.witness \
-  --witness-file  member2_hot.witness \
-  --witness-file  member3_hot.witness \
-  --witness-file  member4_hot.witness \
-  --witness-file  member5_hot.witness \
   --out-file tx.signed
 ```
 
