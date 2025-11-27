@@ -3,7 +3,7 @@ Scripts and their contents to help make operations more understandable to less-t
 
 ## Committee Setup Keys (cc_cold)
 ### create_committee_keys.sh
-This script will generate an individual members cc_cold key pair for use in the cc_cold script used in the update_committee GA. Run using `./create_member_keys.sh`
+This script will generate an individual members cc_cold key pair for use in the cc_cold script used in the update_committee GA. Run using `./create_committee_keys.sh`
 
 ```
 MEMBER="name"
