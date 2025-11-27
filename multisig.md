@@ -2,6 +2,7 @@
 
 ### 1. Steps to create cc_cold_script
 a) Generate cc_cold key pairs
+
 Alice
 ```
 cardano-cli conway governance committee key-gen-cold \
@@ -68,6 +69,7 @@ c) Create cc_cold_script using `nano cc_cold_script.json`
   ]
 }
 ```
+
 d) Get cc_cold_script hash needed for update_committee action
 ```
 cardano-cli hash script \
@@ -80,6 +82,7 @@ cat cc_cold_script.hash
 
 ### 2. Steps to create cc_hot_script
 a) Generate hot key pairs for authorization certificate
+
 Alice
 ```
 cardano-cli conway governance committee key-gen-hot \
@@ -112,6 +115,7 @@ cardano-cli conway governance committee key-gen-hot \
 ```
 
 b) Get cc_hot key hashes to be used in the cc_hot_script
+
 Alice
 ```
 cardano-cli conway governance committee key-hash \
@@ -154,6 +158,7 @@ cc03821f6995cd81fb3711d847871aaa95edaff86ec40f197737227e
 ```
 
 c) Create cc_hot_script `nano committee_hot_script.json`
+
 ```
 {
   "type": "atLeast",
@@ -184,6 +189,7 @@ c) Create cc_hot_script `nano committee_hot_script.json`
 ```
 
 d) Get cc_hot_script hash needed for authorization certificate
+
 ```
 cardano-cli hash script \
   --script-file committee_hot_script.json \
@@ -195,6 +201,7 @@ ea0631ffd1964bc72584566f517cb0e8035630287c53ebe6ac8a1e51
 
 ### 3. Steps to create and submit the authorization certificate
 a) Generate committee_hot_script_authorization certificate
+
 ```
 cardano-cli conway governance committee create-hot-key-authorization-certificate \
     --cold-script-hash 6ccdad60157bcd3bc86dc7912dc9cf2ebc906a3f10471c02c310c418 \
@@ -203,6 +210,7 @@ cardano-cli conway governance committee create-hot-key-authorization-certificate
 ```
 
 b) Build the registration transaction
+
 ```
 cardano-cli conway transaction build \
   --testnet-magic 4 \
@@ -214,6 +222,7 @@ cardano-cli conway transaction build \
 ```
 
 c) Gather witness signatures
+
 ```
 cardano-cli conway transaction witness \
   --testnet-magic 4 \
@@ -241,6 +250,7 @@ cardano-cli conway transaction witness \
 ```
 
 d) Assemble the transaction witnesses
+
 ```
 cardano-cli conway transaction assemble \
   --tx-body-file tx.raw \
@@ -252,6 +262,7 @@ cardano-cli conway transaction assemble \
 ```
 
 e) Submit the transaction
+
 ```
 cardano-cli conway transaction submit \
   --testnet-magic 4 \
