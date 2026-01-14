@@ -221,6 +221,7 @@ cardano-cli conway transaction build \
   --tx-in "$(cardano-cli query utxo --address "$(cat payment.addr)" --testnet-magic 4 --out-file /dev/stdout | jq -r 'keys[0]')" \
   --change-address $(cat payment.addr) \
   --certificate-file cc_hot_script_authorization.cert \
+  --certificate-script-file cc_cold_script.json \
   --witness-override 4 \
   --out-file tx.raw
 ```
